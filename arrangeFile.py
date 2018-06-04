@@ -47,7 +47,13 @@ for name in all_folder_names:
 		# move correspond files to ses-movie/func
 		if fnmatch.fnmatch(func, '*ses-movie*.*.*') or fnmatch.fnmatch(func, '*ses-movie*.*'):
 			os.rename(func, main_directory+'/'+name+'/ses-movie/func/'+func)
-
+	# finish sub/func, delete the func folder
+	os.chdir(main_directory+'/'+name)
+	if os.path.exists('func'):
+		# if func folder is empty, delete
+		if os.listdir('func') == []:
+			os.rmdir('func')
+			
 	# cd to previous level anat folder
 	os.chdir(main_directory+'/'+name+'/anat')	
 	for anat in os.listdir('.'):
