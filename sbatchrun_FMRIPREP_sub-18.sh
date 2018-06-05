@@ -1,13 +1,13 @@
 #!/bin/bash
-participant="sub-17"
+participant="sub-18"
 echo "participant: $participant"
 exp_path="/mindhive/saxelab3/anzellotti/forrest"
 sourcedir="${exp_path}/forrest_bids"
-outdir="${exp_path}/derivatives"
+outdir="${exp_path}/derivatives2"
 workdir="${exp_path}/work"
 module add openmind/singularity/2.4.5
 cwd=/mindhive/saxelab3/anzellotti/software/preproc_fmriprep
-DOW="Fri"
+DOW="Tue"
 # SINGSCRATCH="/om/scratch//anzellot/fmriprep"
 SINGSCRATCH="${exp_path}/scratch_singularity/fmriprep"
 if [ ! -d "$SINGSCRATCH" ]; then
@@ -27,7 +27,7 @@ echo "Launching SingCon in:   ${cwd}"
 echo ''
 # echo 'COMMAND BEING RUN: '
 
-singularity exec -B /mindhive/saxelab3/anzellotti:/mindhive/saxelab3/anzellotti docker://poldracklab/fmriprep:1.0.11 bash -c \
+singularity exec -B /mindhive/saxelab3/anzellotti:/mindhive/saxelab3/anzellotti docker://poldracklab/fmriprep:latest bash -c \
 "ldconfig && \
 fmriprep \
 --participant_label ${participant} \
@@ -41,7 +41,7 @@ fmriprep \
 --fs-no-reconall \
 --fs-license-file /mindhive/saxelab3/anzellotti/software/preproc_fmriprep \
 --write-graph \
-${workdir} \
+-w ${workdir} \
 ${sourcedir} \
 ${outdir} \
 participant"
