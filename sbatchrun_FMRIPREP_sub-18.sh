@@ -3,7 +3,7 @@ participant="sub-18"
 echo "participant: $participant"
 exp_path="/mindhive/saxelab3/anzellotti/forrest"
 sourcedir="${exp_path}/forrest_bids"
-outdir="${exp_path}/derivatives2"
+outdir="${exp_path}/derivatives"
 workdir="${exp_path}/work"
 module add openmind/singularity/2.4.5
 cwd=/mindhive/saxelab3/anzellotti/software/preproc_fmriprep
@@ -39,7 +39,7 @@ fmriprep \
 --output-space T1w template fsnative fsaverage \
 --template MNI152NLin2009cAsym \
 --fs-no-reconall \
---fs-license-file /mindhive/saxelab3/anzellotti/software/preproc_fmriprep \
+--fs-license-file /mindhive/saxelab3/anzellotti/software/preproc_fmriprep/license.txt \
 --write-graph \
 -w ${workdir} \
 ${sourcedir} \
