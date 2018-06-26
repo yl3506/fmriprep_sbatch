@@ -1,8 +1,8 @@
 #!/bin/bash
-thisfolder = /mindhive/saxelab3/anzellotti/forrest/mask_tests/ants_data/
+thisfolder = /mindhive/saxelab3/anzellotti/forrest/mask_tests/
 sub = sub-18
-template = /mindhive/saxelab3/anzellotti/forrest/mask_tests/ants_data/forrestFunctionalSpace_skullStrip.nii.gz
-t1brain = /mindhive/saxelab3/anzellotti/forrest/mask_tests/ants_data/kanparcelSpace_skullStrip.nii
+template = /mindhive/saxelab3/anzellotti/forrest/mask_tests/forrestFunctionalSpace_skullStrip.nii.gz
+t1brain = /mindhive/saxelab3/anzellotti/forrest/mask_tests/kanparcelSpace_skullStrip.nii
 DOW="Tue"
 cd thisfolder
 module add openmind/ants/2.1.0-3.8bed08

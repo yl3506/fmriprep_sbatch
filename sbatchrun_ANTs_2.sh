@@ -3,8 +3,8 @@ dim=3 # image dimensionality
 module add openmind/ants/2.1.0-3.8bed08
 ITK_GLOBAL_DEFAULT_NUMBER_OF_THREADS=4 # controls multi-threading
 export ITK_GLOBAL_DEFAULT_NUMBER_OF_THREADS
-f="/mindhive/saxelab3/anzellotti/forrest/mask_tests/ants_data/forrestFunctionalSpace_skullStrip.nii.gz"
-m="/mindhive/saxelab3/anzellotti/forrest/mask_tests/ants_data/kanparcelSpace_skullStrip.nii"
+f="/mindhive/saxelab3/anzellotti/forrest/mask_tests/forrestFunctionalSpace_skullStrip.nii.gz"
+m="/mindhive/saxelab3/anzellotti/forrest/mask_tests/kanparcelSpace_skullStrip.nii"
 # fixed and moving image file names and fixed image mas, here the fixed image is the template
 if [[ ${#f} -eq 0 ]] ; then #CLI feedback when parameters are not given correctly to the script
 echo usage is
