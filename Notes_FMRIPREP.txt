@@ -1,0 +1,48 @@
+Notes for Preprocessing with FMRIPREP
+
+Full version: http://fptp.wikidot.com/wiki:fmri-preprocessing-tutorial
+
+This is a brief tutorial that will introduce you to preprocessing fMRI data using fmriprep. Fmriprep is a fMRI preprocessing pipeline that combines preprocessing steps from multiple different libraries using nipype. Fmriprep is designed to be accurate and reproducible, so in order to increase the reproducibility of results across different laboratories.
+
+1. Organize your dataset format to match BIDS specification.
+You can check your data format with the BIDS validator (recommended to run with a Docker).
+
+2. Create a singularity image with FMRIPREP.
+Fmriprep is made available in a docker container. You can find the fmriprep docker container on docker hub. The container can be run directly from docker hub, but this can occasionally lead to issues with nipype. These issues can be prevented by downloading the docker container to your computer or cluster using the command in these instructions.
+
+3. Submit script to the computing cluster to run FMRIPREP with singularity image automatically.
+Sample sbatch script (for SLURM):
+(file name: sbatchrun_FMRIPREP_sub-16_sing.sh, the code with underline is to be edited by the user)
+#!/bin/bash
+exp_path="/path/to/experiment/directory"
+cd "/path/to/the/directory/with/fmriprep/singularity/image"
+module add openmind/singularity/2.4.5
+SINGSCRATCH="${exp_path}/scratch_singularity/fmriprep"
+if [ ! -d "$SINGSCRATCH" ]; then
+mkdir -p "${SINGSCRATCH}"
+fi
+echo 'before export'
+export SINGULARITY_CACHEDIR="${SINGSCRATCH}"
+export SINGULARITY_LOCALCACHEDIR="${SINGSCRATCH}"
+echo 'start all instances'
+singularity instance.start -B /path/to/your/singularity/image/file.simg name-of-this-instance
+singularity exec instance://name-of-this-instance bash -c "fmriprep —participant_label sub-16 —nthreads 16 —omp-nthreads 16 —mem_mb 200000 —ignore slicetiming —bold2t1w-dof 9 —output-space T1w template fsnative fsaverage —template MNI152NLin2009cAsym —fs-no-reconall —fs-license-file /path/to/your/freesurfer/license.txt —write-graph -w /path/to/your/work/directory /path/to/your/input/data/directory /path/to/your/output/directory participant"
+echo 'command entered'
+singularity instance.stop name-of-this-instance
+echo 'instance stopped'
+echo 'finished and exit'
+exit
+Sample sbatch script to be submitted directly to SLURM: (filename:sbatch_FMRIPREP_sub-16_sing.sh)
+#!/bin/bash
+#SBATCH —job-name=fmriprep
+#SBATCH —nodes=1 —cpus-per-task=16 —tasks-per-node=1
+#SBATCH —mem=200GB
+#SBATCH —time=5-00:00:00
+#SBATCH —mail-user=your-email-address —mail-type=ALL
+#SBATCH —output=logs/sbatchlog_FMRIPREP_stdout_%j.txt
+#SBATCH —error=logs/sbatchlog_FMRIPREP_stderr_%j.txt
+#SBATCH —qos=yourlabname
+chmod +x sbatchrun_FMRIPREP_sub-16_sing.sh
+srun ./sbatchrun_FMRIPREP_sub-16_sing.sh
+
+4. If the output log reports error like "could not run node", it might arise from random reasons of the operation of the computing cluster. Submit the job again several times until the error disappears. Be aware to delete the scratch_singularity and work directory before submitting the same job again.
