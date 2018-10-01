@@ -1,0 +1,84 @@
+The original dataset format is as below:
+	- sub-01/
+		+ anat/
+		+ func/
+	- sub-02/
+		+ anat/
+		+ func/
+	…
+
+The following modifications are suggested to be made to match the BIDS specification:
+
+1. Add a description file, named dataset_description.json, in the dataset main directory.
+See details in the BIDS specification page 14: 
+http://bids.neuroimaging.io/bids_spec1.1.0.pdf
+The file should contain information such as "BIDSVersion", "License", "Name", "ReferencesAndLinks", etc. Noted that the "ReferencesAndLinks" data should be a list.
+
+2. There are two sessions in each subject's experiment, the localizer session and the movie session. We label the sessions as ses-localizer, and the ses-movie. 
+Make separate directories for each session within the subject directory, and within each session’s directory it should contain a func/ directory and an anat/ directory.
+Example:
+	- sub-01/
+		- ses-localizer/
+			+ anat/
+			+ func/
+		- ses-movie/
+			+ anat/
+			+ func/
+	- sub-02/
+		- ses-localizer/
+			+ anat/
+			+ func/
+		- ses-movie/
+			+ anat/
+			+ func/
+	...
+
+3. Move the original files inside sub-xx/func/ directory into the corresponding sub-xx/ses-localizer/func/ directory or sub-xx/ses-movie/func/ directory according to the session label in the file name.
+
+4. Make copies of all the original files in the sub-xx/anat/ directory, and move the copies to the sub-xx/ses-localizer/anat/ directory. Then move the original files to the sub-xx/ses-movie/anat/ directory.
+
+5. After moving all files into the corresponding session directories, remove the original sub-xx/anat/ directory and sub-xx/func/ directory (now they should all be empty).
+
+6. Rename the files in sub-xx/ses-localizer/anat/ and in sub-xx/ses-movie/anat/ directories to contain the corresponding session label (which is either ses-localier, or ses-movie).
+Example:
+	- sub-01/
+		- ses-localizer/
+			- anat/
+				- sub-01_ses-localizer_mod-T1w_defacemask.nii.gz
+				- sub-01_ses-localizer_T1w.nii.gz
+				- sub-01_ses-localizer_T1w.json
+			+ func/
+		- ses-movie/
+			- anat/
+			    - sub-01_ses-movie_mod-T1w_defacemask.nii.gz
+			    - sub-01_ses-movie_T1w.nii.gz
+			    - sub-01_ses-movie_T1w.json
+			+ func/
+	+ sub-02/
+	...
+
+7. Specifically, for the defacemask file in each sub-xx/ses-localizer/anat/ directory and each sub-xx/ses-movie/anat/ directory, the naming style should be converted to the following:
+(Example) sub-01_ses-localizer_mod-T1w_defacemask.nii.gz
+The mode (T1w) should be labeled as mod-T1w and should be separated by underscores with the session label (which is ses-localizer in this example) and defacemask label.
+
+8. Add RepetitionTime and TaskName information in each json file from sub-xx/ses-localizer/func/ directory, and from sub-xx/ses-movie/func/ directory.
+The RepetitionTime and TaskName should be placed outside the "global" key, and should be saved as two independent keys inside the json file.
+The RepetitionTime should be recorded in seconds instead of milliseconds. 
+The old RepetitionTime should be renamed or deleted so that it will not influence the new RepetitionTime data.
+For the TaskName data, it should match the task label in the file name according to a certain format. See BIDS specification page 23 for detail: 
+http://bids.neuroimaging.io/bids_spec1.1.0.pdf
+Example of a json file (sub-01_ses-localizer_task-movielocalizer_run-1_bold.json):
+{
+    "RepetitionTime": 2.0, 
+    "TaskName": "task-movielocalizer", 
+    "global": {
+        "const": {
+        ...
+        },
+        ...
+    },
+    ...
+}
+
+9. Add SliceTiming information in each json file from sub-xx/ses-localizer/func/ directory, and from sub-xx/ses-movie/func/ directory.
+(To be solved)
